@@ -20,7 +20,7 @@ getPlayerNames()
 // Build deck of cards
 
 var suits = ['spades', 'hearts', 'clubs', 'diamonds']
-var vals = ['Ace', 2, 3, 4, 5, 6, 7, 8, 9, 10, 'Jack', 'Queen', 'King']
+var vals = [2, 3, 4, 5, 6, 7, 8, 9, 10, 'Jack', 'Queen', 'King', 'Ace']
 var deck = []
 
 function Card(suit, value) {
@@ -41,19 +41,41 @@ function newDeck() {
 
 newDeck()
 
+function shuffle(cards) {
+	var shuffledDeck = []
+	var length = cards.length
+	for (var i = 0; i < length; i++) {
+		var pick = Math.floor(Math.random() * deck.length)
+		shuffledDeck.push(deck.splice(pick, 1)[0])
+	}
+	console.log(shuffledDeck)
+	return shuffledDeck
+}
+
+var shuffled = shuffle(deck)
+
 // Game Play
 
+var gameOver = false
+
 function draw(player) {
-	var i = Math.floor(Math.random() * deck.length)
-	var choice = deck.splice(i, 1)
-	player.deck.unshift(choice[0])
-	console.log(player.name + ' plays ' + choice[0].declare())
+	if (deck.length > 0) {
+		var i = Math.floor(Math.random() * deck.length)
+		var choice = deck.splice(i, 1)
+		player.deck.unshift(choice[0])
+		console.log(player.name + ' plays ' + choice[0].declare())
+	} else {
+		console.log('The deck is finished!')
+		gameOver = true
+	}
 }
 
 function play() {
 	draw(player1)
 	draw(player2)
-	calculateWin()
+	if (!gameOver) {
+		calculateWin()
+	}
 }
 
 function calculateWin() {
