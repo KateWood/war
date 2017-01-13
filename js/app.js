@@ -74,6 +74,16 @@ function battle() {
 	}
 	console.log(player1.name + ' has ' + player1.deck.length + ' cards.')
 	console.log(player2.name + ' has ' + player2.deck.length + ' cards.')
+	checkForWin()
+}
+
+function checkForWin() {
+	if (player1.deck.length === 0 || player2.deck.length === 0) {
+		var winner = player1.deck.length > 0 ? player1.name : player2.name
+		console.log(winner + ' wins!')
+		newDeck()
+		shuffle(deck)
+	}
 }
 
 // var gameOver = false
