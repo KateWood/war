@@ -9,18 +9,15 @@ var deck = []
 //////////////////// Create players ////////////////////
 
 function getPlayerNames() {
-	// var user1 = prompt('Player 1, please enter your name')
-	var user1 = 'Kate'
+	var user1 = prompt('Player 1, please enter your name')
 	player1 = new Player(user1)
-	// var user2 = prompt('Player 2, please enter your name')
-	var user2 = 'Merc'
+	var user2 = prompt('Player 2, please enter your name')
 	player2 = new Player(user2)
+}
 
-	function Player(name) {
-		this.name = name
-		this.score = 0
-		this.deck = []
-	}
+function Player(name) {
+	this.name = name
+	this.hand = []
 }
 
 getPlayerNames()
@@ -41,6 +38,7 @@ function newDeck() {
 			deck.push(new Card(suits[i], vals[j]))
 		}
 	}
+	shuffle()
 }
 
 newDeck()
@@ -56,38 +54,35 @@ function shuffle() {
 }
 
 function deal(cards) {
-	player1.deck = cards.splice(0, 26)
-	player2.deck = cards
+	player1.hand = cards.splice(0, 26)
+	player2.hand = cards
 }
-
-shuffle()
 
 //////////////////// Game Play ////////////////////
 
 function battle() {
-	var card1 = player1.deck.shift()
-	var card2 = player2.deck.shift()
+	var card1 = player1.hand.shift()
+	var card2 = player2.hand.shift()
 	if (vals.indexOf(card1.value) > vals.indexOf(card2.value)) {
-		player1.deck.push(card1, card2)
-		console.log(player1.name + ' wins with a(n) ' + card1.value)
+		player1.hand.push(card1, card2)
+		console.log(player1.name + ' wins ' + card2.declare() + ' with ' + card1.declare())
 	} else if (vals.indexOf(card2.value) > vals.indexOf(card1.value)) {
-		player2.deck.push(card1, card2)
-		console.log(player2.name + ' wins with a(n) ' + card2.value)
+		player2.hand.push(card1, card2)
+		console.log(player1.name + ' wins ' + card1.declare() + ' with ' + card2.declare())
 	} else if (vals.indexOf(card1.value) === vals.indexOf(card2.value)) {
-		console.log('WAR!')
+		console.log(player1.name + ' played ' + card1.declare() + ' and ' + player2.name + ' played ' + card2.declare() + '. THIS MEANS WAR!')
 		war(card1, card2)
 	}
-	console.log(player1.name + ' has ' + player1.deck.length + ' cards.')
-	console.log(player2.name + ' has ' + player2.deck.length + ' cards.')
+	console.log(player1.name + ' has ' + player1.hand.length + ' cards.')
+	console.log(player2.name + ' has ' + player2.hand.length + ' cards.')
 	checkForWin()
 }
 
 function checkForWin() {
-	if (player1.deck.length === 0 || player2.deck.length === 0) {
-		var winner = player1.deck.length > 0 ? player1.name : player2.name
-		console.log(winner + ' wins!')
+	if (player1.hand.length === 0 || player2.hand.length === 0) {
+		var winner = player1.hand.length > 0 ? player1.name : player2.name
+		console.log(winner + ' wins! Redealing cards...')
 		newDeck()
-		shuffle(deck)
 	}
 }
 
@@ -97,34 +92,39 @@ function war(card1, card2) {
 	wager(player2)
 	var potList = declarePot()
 	console.log('The pot at stake is ' + potList)
-	var warCard1 = player1.deck.shift()
-	var warCard2 = player2.deck.shift()
-	if (vals.indexOf(warCard1.value) > vals.indexOf(warCard2.value)) {
-		player1.deck.push(warCard1, warCard2)
-		pot.forEach(function(prize){
-			player1.deck.push(prize)
-		})
-	} else if (vals.indexOf(warCard2.value) > vals.indexOf(warCard1.value)) {
-		player2.deck.push(warCard1, warCard2)
-		pot.forEach(function(prize){
-			player2.deck.push(prize)
-		})
-	} else if (vals.indexOf(warCard1.value) === vals.indexOf(warCard2.value)) {
-		console.log('DOUBLE WAR!')
-		battle(warCard1, warCard2)
+	if (player1.hand.length > 0 && player2.hand.length > 0) {
+		var warCard1 = player1.hand.shift()
+		var warCard2 = player2.hand.shift()
+		if (vals.indexOf(warCard1.value) > vals.indexOf(warCard2.value)) {
+			player1.hand.push(warCard1, warCard2)
+			pot.forEach(function(prize){
+				player1.hand.push(prize)
+			})
+			pot = []
+		} else if (vals.indexOf(warCard2.value) > vals.indexOf(warCard1.value)) {
+			player2.hand.push(warCard1, warCard2)
+			pot.forEach(function(prize){
+				player2.hand.push(prize)
+			})
+			pot = []
+		} else if (vals.indexOf(warCard1.value) === vals.indexOf(warCard2.value)) {
+			console.log(player1.name + ' played ' + warCard1.declare() + ' and ' + player2.name + ' played ' + warCard2.declare() + '. THIS MEANS WAR!')
+			war(warCard1, warCard2)
+		}
 	}
-	pot = []
 }
 
 function wager(player) {
 	var wagerCount
-	if (player.deck.length > 3) {
+	if (player.hand.length > 3) {
 		wagerCount = 3
+	} else if (player.hand.length > 0) {
+		wagerCount = player.hand.length - 1
 	} else {
-		wagerCount = player.deck.length - 1
+		wagerCount = 0
 	}
 	for (var i = 0; i < wagerCount; i++) {
-		pot.push(player.deck.shift())
+		pot.push(player.hand.shift())
 	}
 }
 
