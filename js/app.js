@@ -19,3 +19,9 @@ for(var i = 0; i < suits.length; i++) {
 }
 
 console.log(deck)
+
+function draw() {
+	var i = Math.floor(Math.random() * deck.length)
+	var choice = deck.splice(i, 1)
+	console.log(choice[0].declare())
+}
