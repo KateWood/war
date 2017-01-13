@@ -49,10 +49,15 @@ function shuffle(cards) {
 		shuffledDeck.push(deck.splice(pick, 1)[0])
 	}
 	console.log(shuffledDeck)
-	return shuffledDeck
+	deal(shuffledDeck)
 }
 
-var shuffled = shuffle(deck)
+function deal(cards) {
+	player1.deck = cards.splice(0, 26)
+	player2.deck = cards
+}
+
+shuffle(deck)
 
 // Game Play
 
