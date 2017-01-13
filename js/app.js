@@ -1,5 +1,20 @@
 console.log('connected')
 
+// Create players
+
+user1 = prompt('Player 1, please enter your name')
+player1 = new Player(user1)
+user2 = prompt('Player 2, please enter your name')
+player2 = new Player(user2)
+
+function Player(name) {
+	this.name = name
+	this.score = 0
+	this.deck = []
+}
+
+// Build deck of cards
+
 function Card(suit, value) {
 	this.suit = suit
 	this.value = value
@@ -18,7 +33,10 @@ for(var i = 0; i < suits.length; i++) {
 	}
 }
 
-console.log(deck)
+
+
+
+
 
 function draw() {
 	var i = Math.floor(Math.random() * deck.length)
