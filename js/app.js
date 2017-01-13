@@ -68,7 +68,7 @@ function battle() {
 		console.log(player1.name + ' wins ' + card2.declare() + ' with ' + card1.declare())
 	} else if (vals.indexOf(card2.value) > vals.indexOf(card1.value)) {
 		player2.hand.push(card1, card2)
-		console.log(player1.name + ' wins ' + card1.declare() + ' with ' + card2.declare())
+		console.log(player2.name + ' wins ' + card1.declare() + ' with ' + card2.declare())
 	} else if (vals.indexOf(card1.value) === vals.indexOf(card2.value)) {
 		console.log(player1.name + ' played ' + card1.declare() + ' and ' + player2.name + ' played ' + card2.declare() + '. THIS MEANS WAR!')
 		war(card1, card2)
@@ -96,12 +96,14 @@ function war(card1, card2) {
 		var warCard1 = player1.hand.shift()
 		var warCard2 = player2.hand.shift()
 		if (vals.indexOf(warCard1.value) > vals.indexOf(warCard2.value)) {
+			console.log(player1.name + ' wins ' + warCard2.declare() + ' with ' + warCard1.declare())
 			player1.hand.push(warCard1, warCard2)
 			pot.forEach(function(prize){
 				player1.hand.push(prize)
 			})
 			pot = []
 		} else if (vals.indexOf(warCard2.value) > vals.indexOf(warCard1.value)) {
+			console.log(player2.name + ' wins ' + warCard1.declare() + ' with ' + warCard2.declare())
 			player2.hand.push(warCard1, warCard2)
 			pot.forEach(function(prize){
 				player2.hand.push(prize)
